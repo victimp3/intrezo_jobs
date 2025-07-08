@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "427068391886",
+    "project_id": "intrezo-jobs",
+    "storage_bucket": "intrezo-jobs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427068391886:android:edef3f6f09f80c9b5c6b9f",
+        "android_client_info": {
+          "package_name": "com.intrezo.intrezo_jobs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDXcPWxyazgSFD14XbgboPyDZAVtGdW3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
