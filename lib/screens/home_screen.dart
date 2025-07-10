@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,50 +11,59 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showFavourites = false;
+  List<Map<String, dynamic>> allJobs = [];
+  List<Map<String, dynamic>> favouriteJobs = [];
 
-  final List<Map<String, dynamic>> allJobs = [
-    {
-      'title': 'BAKER',
-      'description':
-      'Prepare Fresh Bread, Pastries, And Other Baked Goods. Creativity And Precision Make Every Product Special.',
-      'type': 'Full-Time Or Shifts',
-      'salary': '1000–1500€',
-      'image': 'assets/images/baker.png',
-      'isFavourite': true,
-    },
-    {
-      'title': 'TAXI DRIVER',
-      'description': 'Transport Passengers Comfortably To Their Destinations.',
-      'type': 'Self-Managed',
-      'salary': '1000–1300€',
-      'image': 'assets/images/taxi.png',
-      'isFavourite': false,
-    },
-    {
-      'title': 'KITCHEN ASSISTANT',
-      'description':
-      'Support The Kitchen Team With Prep Work And Maintaining A Clean Workspace. Assist With Basic Cooking Tasks.',
-      'type': 'Shift-Based',
-      'salary': '700–1350€',
-      'image': 'assets/images/assistant.png',
-      'isFavourite': true,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    loadJobs();
+  }
 
-  final List<Map<String, dynamic>> favouriteJobs = [];
+  Future<void> loadJobs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getStringList('favouriteJobs') ?? [];
+
+    final query = await FirebaseFirestore.instance.collection('vacancies').get();
+
+    final jobs = query.docs.map((doc) {
+      final data = doc.data();
+      return {
+        'title': data['title'],
+        'description': data['description'],
+        'salary': data['salary'],
+        'location': data['location'],
+        'posted_at': data['posted_at'],
+        'image': data['image'],
+        'type': data['type'], // добавили поле type
+      };
+    }).toList();
+
+    setState(() {
+      allJobs = jobs;
+      favouriteJobs = jobs.where((job) => saved.contains(job['title'])).toList();
+    });
+  }
+
+  Future<void> saveFavourites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favTitles = favouriteJobs.map((job) => job['title'] as String).toList();
+    await prefs.setStringList('favouriteJobs', favTitles);
+  }
 
   void toggleFavourite(Map<String, dynamic> job) {
     setState(() {
-      job['isFavourite'] = !(job['isFavourite'] ?? false);
-
-      if (job['isFavourite']) {
-        if (!favouriteJobs.contains(job)) {
-          favouriteJobs.add(job);
-        }
+      if (isFavourite(job)) {
+        favouriteJobs.removeWhere((item) => item['title'] == job['title']);
       } else {
-        favouriteJobs.remove(job);
+        favouriteJobs.add(job);
       }
+      saveFavourites();
     });
+  }
+
+  bool isFavourite(Map<String, dynamic> job) {
+    return favouriteJobs.any((item) => item['title'] == job['title']);
   }
 
   @override
@@ -67,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: const [
-            _NavItem(icon: Icons.home, label: 'Home'),
+            _NavItem(icon: Icons.home, label: 'Home', isActive: true),
             _NavItem(icon: Icons.info, label: 'About Us'),
             _NavItem(icon: Icons.call, label: 'Contact'),
           ],
@@ -123,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: !showFavourites
                           ? const Color(0xFF001730)
                           : Colors.black.withOpacity(0.4),
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -139,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.bold,
                       color: showFavourites
                           ? const Color(0xFF001730)
                           : Colors.black.withOpacity(0.4),
@@ -161,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(right: 16),
                     child: _JobCard(
                       job: job,
+                      isFavourite: isFavourite(job),
                       onToggleFavourite: () => toggleFavourite(job),
                     ),
                   );
@@ -176,9 +188,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _JobCard extends StatelessWidget {
   final Map<String, dynamic> job;
+  final bool isFavourite;
   final VoidCallback onToggleFavourite;
 
-  const _JobCard({required this.job, required this.onToggleFavourite});
+  const _JobCard({
+    required this.job,
+    required this.isFavourite,
+    required this.onToggleFavourite,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +213,7 @@ class _JobCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Image.asset(
-                  job['image'],
+                  'assets/images/${job['image']}',
                   height: 130,
                   width: 250,
                   fit: BoxFit.cover,
@@ -209,7 +226,7 @@ class _JobCard extends StatelessWidget {
                   onTap: onToggleFavourite,
                   child: Icon(
                     Icons.bookmark,
-                    color: job['isFavourite'] ? Colors.amber : Colors.white,
+                    color: isFavourite ? Colors.amber : Colors.white,
                   ),
                 ),
               ),
@@ -220,44 +237,67 @@ class _JobCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  job['title'],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto',
-                    color: Colors.white,
+                Center(
+                  child: Text(
+                    job['title'].toString().toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   job['description'],
                   style: const TextStyle(
                     fontSize: 13,
                     fontFamily: 'Roboto',
-                    height: 1.3,
                     color: Colors.white,
+                    height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  job['type'],
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
-                    decoration: TextDecoration.underline,
-                    fontSize: 13,
-                    fontFamily: 'Roboto',
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   job['salary'],
                   style: const TextStyle(
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    fontFamily: 'Roboto',
+                    fontFamily: 'RobotoMono',
                     color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  job['location'],
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'RobotoMono',
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  job['type'] ?? '',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontFamily: 'RobotoMono',
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    job['posted_at'],
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontFamily: 'RobotoMono',
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
@@ -272,15 +312,30 @@ class _JobCard extends StatelessWidget {
 class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool isActive;
 
-  const _NavItem({required this.icon, required this.label});
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    this.isActive = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.white),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isActive ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: isActive ? const Color(0xFF001730) : Colors.white,
+          ),
+        ),
         const SizedBox(height: 4),
         Text(
           label,
