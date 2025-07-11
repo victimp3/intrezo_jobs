@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'screens/splash_screen.dart';
 import 'screens/how_it_works_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/contact_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomeScreen(),
         '/how-it-works': (context) => const HowItWorksScreen(),
+        '/contact': (context) => const ContactScreen(),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'vacancy_detail_screen.dart';
+import 'contact_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('favouriteJobs') ?? [];
 
-    final query = await FirebaseFirestore.instance.collection('vacancies').get();
+    final query =
+    await FirebaseFirestore.instance.collection('vacancies').get();
 
     final jobs = query.docs.map((doc) {
       final data = doc.data();
@@ -35,19 +38,26 @@ class _HomeScreenState extends State<HomeScreen> {
         'location': data['location'],
         'posted_at': data['posted_at'],
         'image': data['image'],
-        'type': data['type'], // добавили поле type
+        'type': data['type'],
+        'language_requirement': data['language_requirement'],
+        'housing': data['housing'],
+        'job_description': data['job_description'],
+        'requirements': data['requirements'],
+        'benefits': data['benefits'],
       };
     }).toList();
 
     setState(() {
       allJobs = jobs;
-      favouriteJobs = jobs.where((job) => saved.contains(job['title'])).toList();
+      favouriteJobs =
+          jobs.where((job) => saved.contains(job['title'])).toList();
     });
   }
 
   Future<void> saveFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    final favTitles = favouriteJobs.map((job) => job['title'] as String).toList();
+    final favTitles =
+    favouriteJobs.map((job) => job['title'] as String).toList();
     await prefs.setStringList('favouriteJobs', favTitles);
   }
 
@@ -77,10 +87,24 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            _NavItem(icon: Icons.home, label: 'Home', isActive: true),
-            _NavItem(icon: Icons.info, label: 'About Us'),
-            _NavItem(icon: Icons.call, label: 'Contact'),
+          children: [
+            GestureDetector(
+              onTap: () {
+              },
+              child: const _NavItem(icon: Icons.home, label: 'Home', isActive: true),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Пока не реализовано
+              },
+              child: const _NavItem(icon: Icons.info, label: 'About Us'),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/contact');
+              },
+              child: const _NavItem(icon: Icons.call, label: 'Contact'),
+            ),
           ],
         ),
       ),
@@ -94,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 alignment: Alignment.center,
                 children: [
                   Center(
-                    child: Image.asset('assets/images/headerLogo.png', height: 40),
+                    child:
+                    Image.asset('assets/images/headerLogo.png', height: 40),
                   ),
                   Positioned(
                     right: 0,
@@ -170,10 +195,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   final job = jobs[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child: _JobCard(
-                      job: job,
-                      isFavourite: isFavourite(job),
-                      onToggleFavourite: () => toggleFavourite(job),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                VacancyDetailScreen(vacancy: job),
+                          ),
+                        );
+                      },
+                      child: _JobCard(
+                        job: job,
+                        isFavourite: isFavourite(job),
+                        onToggleFavourite: () => toggleFavourite(job),
+                      ),
                     ),
                   );
                 },
@@ -211,7 +247,8 @@ class _JobCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Image.asset(
                   'assets/images/${job['image']}',
                   height: 130,
@@ -254,7 +291,7 @@ class _JobCard extends StatelessWidget {
                   job['description'],
                   style: const TextStyle(
                     fontSize: 13,
-                    fontFamily: 'Roboto',
+                    fontFamily: 'RobotoMono',
                     color: Colors.white,
                     height: 1.5,
                   ),
