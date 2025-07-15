@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'vacancy_detail_screen.dart';
-import 'contact_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,8 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('favouriteJobs') ?? [];
 
-    final query =
-    await FirebaseFirestore.instance.collection('vacancies').get();
+    final query = await FirebaseFirestore.instance.collection('vacancies').get();
 
     final jobs = query.docs.map((doc) {
       final data = doc.data();
@@ -49,15 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       allJobs = jobs;
-      favouriteJobs =
-          jobs.where((job) => saved.contains(job['title'])).toList();
+      favouriteJobs = jobs.where((job) => saved.contains(job['title'])).toList();
     });
   }
 
   Future<void> saveFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    final favTitles =
-    favouriteJobs.map((job) => job['title'] as String).toList();
+    final favTitles = favouriteJobs.map((job) => job['title'] as String).toList();
     await prefs.setStringList('favouriteJobs', favTitles);
   }
 
@@ -88,22 +84,27 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            GestureDetector(
+            _NavItem(
+              icon: Icons.home,
+              label: 'Home',
+              isActive: true,
               onTap: () {
+                Navigator.pushNamed(context, '/home');
               },
-              child: const _NavItem(icon: Icons.home, label: 'Home', isActive: true),
             ),
-            GestureDetector(
+            _NavItem(
+              icon: Icons.info,
+              label: 'About Us',
               onTap: () {
-                // Пока не реализовано
+                Navigator.pushNamed(context, '/about-us');
               },
-              child: const _NavItem(icon: Icons.info, label: 'About Us'),
             ),
-            GestureDetector(
+            _NavItem(
+              icon: Icons.call,
+              label: 'Contact',
               onTap: () {
                 Navigator.pushNamed(context, '/contact');
               },
-              child: const _NavItem(icon: Icons.call, label: 'Contact'),
             ),
           ],
         ),
@@ -118,8 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 alignment: Alignment.center,
                 children: [
                   Center(
-                    child:
-                    Image.asset('assets/images/headerLogo.png', height: 40),
+                    child: Image.asset('assets/images/headerLogo.png', height: 40),
                   ),
                   Positioned(
                     right: 0,
@@ -139,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Roboto',
+                color: Color(0xFF001730),
               ),
             ),
             const SizedBox(height: 100),
@@ -200,8 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                VacancyDetailScreen(vacancy: job),
+                            builder: (context) => VacancyDetailScreen(vacancy: job),
                           ),
                         );
                       },
@@ -247,8 +247,7 @@ class _JobCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Image.asset(
                   'assets/images/${job['image']}',
                   height: 130,
@@ -350,35 +349,40 @@ class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isActive;
+  final VoidCallback? onTap;
 
   const _NavItem({
     required this.icon,
     required this.label,
     this.isActive = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: isActive ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.white : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: isActive ? const Color(0xFF001730) : Colors.white,
+            ),
           ),
-          child: Icon(
-            icon,
-            color: isActive ? const Color(0xFF001730) : Colors.white,
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'application_form_screen.dart';
 
 class VacancyDetailScreen extends StatelessWidget {
   final Map<String, dynamic> vacancy;
@@ -159,7 +160,7 @@ class VacancyDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // APPLY BUTTON
+// APPLY BUTTON
             Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: ElevatedButton(
@@ -171,7 +172,12 @@ class VacancyDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
                 ),
                 onPressed: () {
-                  // TODO: открыть экран подачи заявки
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ApplicationFormScreen(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'APPLY',

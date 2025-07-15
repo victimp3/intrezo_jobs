@@ -16,6 +16,9 @@ dependencies:
   cloud_firestore: ^4.17.2
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.5
+  font_awesome_flutter: ^10.7.0
+  file_picker: ^10.2.0
+  firebase_storage: ^11.5.6
 
 dev_dependencies:
   flutter_test:
@@ -32,11 +35,9 @@ flutter:
     - assets/images/baker.png
     - assets/images/taxi.png
     - assets/images/assistant.png
-    - assets/images/facebook.png
-    - assets/images/viber.png
-    - assets/images/telegram.png
-    - assets/images/whatsapp.png
-    - assets/images/linkedin.png
+    - assets/images/team_photo.png
+    - assets/images/mission_image.png
+    - assets/images/vision_image.png
 
   fonts:
     - family: Roboto

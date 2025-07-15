@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
@@ -22,146 +23,149 @@ class ContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F3F6),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Image.asset('assets/images/headerLogo.png', height: 40),
-      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              const Text(
-                'Contact',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Roboto',
-                  color: Color(0xFF001730),
-                ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: Image.asset('assets/images/headerLogo.png', height: 40),
               ),
-              const SizedBox(height: 40),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF001730),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: Text(
-                        'Intrezo OÜ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                        ),
+            ),
+            const SizedBox(height: 40),
+            const Text(
+              'CONTACT',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+                color: Color(0xFF001730),
+              ),
+            ),
+            const SizedBox(height: 40),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color(0xFF001730),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Intrezo OÜ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Address',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    const Text(
-                      'Lelle Tn 24\nTallinn, Harjumaa 11318',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Phone',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    const Text(
-                      '+372 56836668\n+372 6773091',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: _launchEmail,
-                      child: const Text(
-                        'Email',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text('Address', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  const Text(
+                    'Lelle Tn 24\nTallinn, Harjumaa 11318',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Phone', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  const Text(
+                    '+372 56836668\n+372 6773091',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: _launchEmail,
+                    child: const Text('Email', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  ),
+                  GestureDetector(
+                    onTap: _launchEmail,
+                    child: const Text(
+                      'info@intrezo.ee',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: _launchEmail,
-                      child: const Text(
-                        'info@intrezo.ee',
-                        style: TextStyle(color: Colors.white70, fontSize: 14, decoration: TextDecoration.underline),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Registry code',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    const Text(
-                      '16440043',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () => _launchMessenger("https://wa.me/3725294917"),
-                          icon: Image.asset('assets/images/whatsapp.png', height: 20),
-                          label: const Text("WhatsApp\nContact Us", textAlign: TextAlign.left),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF25D366),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () => _launchMessenger("viber://chat?number=+3725294917"),
-                          icon: Image.asset('assets/images/viber.png', height: 20),
-                          label: const Text("Viber\nContact Us", textAlign: TextAlign.left),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF7360F2),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Center(
-                      child: ElevatedButton.icon(
-                        onPressed: () => _launchMessenger("https://t.me/+3725294917"),
-                        icon: Image.asset('assets/images/telegram.png', height: 20),
-                        label: const Text("Telegram\nContact Us", textAlign: TextAlign.left),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Registry code', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  const Text(
+                    '16440043',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  const SizedBox(height: 24),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () => _launchMessenger("https://wa.me/3725294917"),
+                        icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30),
+                        label: const Text("WhatsApp\nContact Us", textAlign: TextAlign.left),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0088cc),
+                          backgroundColor: const Color(0xFF25D366),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                         ),
                       ),
+                      ElevatedButton.icon(
+                        onPressed: () => _launchMessenger("viber://chat?number=%2B3725294917"),
+                        icon: const FaIcon(FontAwesomeIcons.viber, color: Colors.white, size: 30),
+                        label: const Text("Viber\nContact Us", textAlign: TextAlign.left),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF7360F2),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _launchMessenger("https://t.me/+3725294917"),
+                      icon: const FaIcon(FontAwesomeIcons.telegram, color: Colors.white, size: 30),
+                      label: const Text("Telegram\nContact Us", textAlign: TextAlign.left),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0088cc),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/facebook.png', width: 40, height: 40),
-                    const SizedBox(width: 16),
-                    Image.asset('assets/images/linkedin.png', width: 40, height: 40),
-                  ],
-                ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => _launchMessenger("https://www.facebook.com/people/Intrezo-HR/61570892398634/#"),
+                    child: const FaIcon(FontAwesomeIcons.facebook, size: 32, color: Color(0xFF001730)),
+                  ),
+                  const SizedBox(width: 24),
+                  GestureDetector(
+                    onTap: () => _launchMessenger("https://ee.linkedin.com/company/intrezo-o%C3%BC"),
+                    child: const FaIcon(FontAwesomeIcons.linkedin, size: 32, color: Color(0xFF001730)),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+
       bottomNavigationBar: Container(
         color: const Color(0xFF001730),
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -171,17 +175,22 @@ class ContactScreen extends StatelessWidget {
             _NavItem(
               icon: Icons.home,
               label: 'Home',
-              onTap: () => Navigator.pushNamed(context, '/home'),
+              onTap: () {
+                Navigator.pushNamed(context, '/home');
+              },
             ),
             _NavItem(
               icon: Icons.info,
               label: 'About Us',
-              onTap: () => Navigator.pushNamed(context, '/how-it-works'),
+              onTap: () {
+                Navigator.pushNamed(context, '/about-us');
+              },
             ),
-            const _NavItem(
+            _NavItem(
               icon: Icons.call,
               label: 'Contact',
               isActive: true,
+              onTap: () {}, // Уже на странице контактов
             ),
           ],
         ),
