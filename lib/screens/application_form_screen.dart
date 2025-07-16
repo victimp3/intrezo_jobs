@@ -3,9 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
+import 'confirmation_screen.dart';
 
 class ApplicationFormScreen extends StatefulWidget {
-  const ApplicationFormScreen({super.key});
+  final Map<String, dynamic> vacancy;
+
+  const ApplicationFormScreen({Key? key, required this.vacancy}) : super(key: key);
 
   @override
   State<ApplicationFormScreen> createState() => _ApplicationFormScreenState();
@@ -20,11 +23,12 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
 
   final _nameController = TextEditingController();
   final _dobController = TextEditingController();
-  final _contactController = TextEditingController();
   final _bestTimeController = TextEditingController();
   final _commentController = TextEditingController();
   final _experienceController = TextEditingController();
   final _languageController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   String? _citizenship;
   String? _contactMethod;
@@ -66,8 +70,8 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
     if (_selectedFile == null) return null;
     setState(() => _uploadingFile = true);
 
-    final storageRef = FirebaseStorage.instance
-        .ref('applications/${DateTime.now().millisecondsSinceEpoch}_${_selectedFile!.name}');
+    final storageRef = FirebaseStorage.instance.ref(
+        'applications/${DateTime.now().millisecondsSinceEpoch}_${_selectedFile!.name}');
     Uint8List fileBytes = _selectedFile!.bytes!;
 
     await storageRef.putData(fileBytes);
@@ -88,13 +92,18 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
         : word[0].toUpperCase() + word.substring(1).toLowerCase())
         .join(' ');
 
+    String? contactInfo = (_contactMethod == 'Email')
+        ? _emailController.text.trim()
+        : _phoneController.text.trim();
+
     String? fileUrl = await _uploadFile();
 
     await FirebaseFirestore.instance.collection('applications').add({
+      'vacancy_title': widget.vacancy['title'],
       'full_name': formattedName,
       'date_of_birth': _dobController.text,
       'citizenship': _citizenship,
-      'contact_info': _contactController.text,
+      'contact_info': contactInfo,
       'preferred_contact_method': _contactMethod,
       'best_time_to_contact': _bestTimeController.text,
       'permit_status': _permitStatus,
@@ -105,18 +114,24 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
       'submitted_at': DateTime.now(),
     });
 
-    Navigator.pushReplacementNamed(context, '/confirmation');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmationScreen(vacancy: widget.vacancy),
+      ),
+    );
   }
 
   void _clearForm() {
     _formKey.currentState?.reset();
     _nameController.clear();
     _dobController.clear();
-    _contactController.clear();
     _bestTimeController.clear();
     _commentController.clear();
     _experienceController.clear();
     _languageController.clear();
+    _emailController.clear();
+    _phoneController.clear();
     setState(() {
       _citizenship = null;
       _contactMethod = null;
@@ -127,11 +142,16 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
     });
   }
 
-  String? _validateContact(String? value) {
-    if (value == null || value.isEmpty) return 'Please enter phone or email';
-    if (value.contains('@') && !value.contains('.')) {
-      return 'Invalid email address';
-    }
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'Please enter email';
+    if (!value.contains('@') || !value.contains('.')) return 'Invalid email address';
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) return 'Please enter phone number';
+    final phoneRegex = RegExp(r'^[0-9+\-\s]{6,}$');
+    if (!phoneRegex.hasMatch(value)) return 'Invalid phone number';
     return null;
   }
 
@@ -212,7 +232,6 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('MAIN', style: TextStyle(fontWeight: FontWeight.bold)),
-
               const SizedBox(height: 16),
 
               _buildInputField(
@@ -250,16 +269,6 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
               ),
 
               _buildInputField(
-                label: 'Contact Info (Phone or Email)',
-                requiredField: true,
-                child: TextFormField(
-                  controller: _contactController,
-                  decoration: _inputDecoration('Phone or email'),
-                  validator: _validateContact,
-                ),
-              ),
-
-              _buildInputField(
                 label: 'Preferred Method of Contact',
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
@@ -270,6 +279,28 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                   validator: (v) => v == null ? 'Please select method' : null,
                 ),
               ),
+
+              if (_contactMethod == 'Email')
+                _buildInputField(
+                  label: 'Email Address',
+                  requiredField: true,
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: _inputDecoration('Enter your email'),
+                    validator: _validateEmail,
+                  ),
+                ),
+
+              if (_contactMethod != null && _contactMethod != 'Email')
+                _buildInputField(
+                  label: 'Phone Number',
+                  requiredField: true,
+                  child: TextFormField(
+                    controller: _phoneController,
+                    decoration: _inputDecoration('Enter your phone number'),
+                    validator: _validatePhone,
+                  ),
+                ),
 
               _buildInputField(
                 label: 'Best Time to Contact You',
@@ -287,9 +318,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration('Select option'),
                   value: _permitStatus,
-                  items: ['Yes', 'No', 'In process']
-                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                      .toList(),
+                  items: ['Yes', 'No', 'In process'].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                   onChanged: (v) => setState(() => _permitStatus = v),
                   validator: (v) => v == null ? 'Please select option' : null,
                 ),
@@ -297,7 +326,6 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
 
               const SizedBox(height: 24),
               const Text('OPTIONAL', style: TextStyle(fontWeight: FontWeight.bold)),
-
               const SizedBox(height: 16),
 
               _buildInputField(

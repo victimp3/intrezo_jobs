@@ -12,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showFavourites = false;
+  bool sortNewestFirst = true;
   List<Map<String, dynamic>> allJobs = [];
   List<Map<String, dynamic>> favouriteJobs = [];
 
@@ -72,11 +73,84 @@ class _HomeScreenState extends State<HomeScreen> {
     return favouriteJobs.any((item) => item['title'] == job['title']);
   }
 
+  List<Map<String, dynamic>> getSortedJobs() {
+    List<Map<String, dynamic>> jobs = showFavourites ? [...favouriteJobs] : [...allJobs];
+
+    jobs.sort((a, b) {
+      final aDate = DateTime.tryParse(a['posted_at'] ?? '') ?? DateTime(2000);
+      final bDate = DateTime.tryParse(b['posted_at'] ?? '') ?? DateTime(2000);
+
+      return sortNewestFirst ? bDate.compareTo(aDate) : aDate.compareTo(bDate);
+    });
+
+    return jobs;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final jobs = showFavourites ? favouriteJobs : allJobs;
+    final jobs = getSortedJobs();
 
     return Scaffold(
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const SizedBox(height: 110),
+            ListTile(
+              leading: const Icon(Icons.description, color: Color(0xFF001730)),
+              title: const Text(
+                'Documents',
+                style: TextStyle(
+                  color: Color(0xFF001730),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                if (!mounted) return;
+                Navigator.pushNamed(context, '/documents');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.help_outline, color: Color(0xFF001730)),
+              title: const Text(
+                'FAQ',
+                style: TextStyle(
+                  color: Color(0xFF001730),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                if (!mounted) return;
+                Navigator.pushNamed(context, '/faq');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings, color: Color(0xFF001730)),
+              title: const Text(
+                'Settings',
+                style: TextStyle(
+                  color: Color(0xFF001730),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                if (!mounted) return;
+                Navigator.pushNamed(context, '/settings');
+              },
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF545D68)),
+        title: Image.asset('assets/images/headerLogo.png', height: 40),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
         color: const Color(0xFF001730),
@@ -112,27 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Image.asset('assets/images/headerLogo.png', height: 40),
-                  ),
-                  Positioned(
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.menu),
-                      color: Color(0xFF545D68),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             const Text(
               'VACANCY LIST',
               style: TextStyle(
@@ -142,7 +196,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Color(0xFF001730),
               ),
             ),
-            const SizedBox(height: 100),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      sortNewestFirst = !sortNewestFirst;
+                    });
+                  },
+                  icon: Icon(sortNewestFirst ? Icons.arrow_downward : Icons.arrow_upward),
+                  label: Text(sortNewestFirst ? 'Newest First' : 'Oldest First'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF001730),
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

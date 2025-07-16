@@ -7,7 +7,9 @@ import 'screens/how_it_works_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/about_us_screen.dart';
 import 'screens/contact_screen.dart';
-import 'screens/application_form_screen.dart';
+import 'screens/documents_screen.dart';
+import 'screens/faq_screen.dart';
+import 'screens/settings_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +33,9 @@ class MyApp extends StatelessWidget {
         '/how-it-works': (context) => const HowItWorksScreen(),
         '/contact': (context) => const ContactScreen(),
         '/about-us': (context) => const AboutUsScreen(),
-        '/application-form': (context) => const ApplicationFormScreen(),
+        '/documents': (context) => const DocumentsScreen(),
+        '/faq': (context) => const FAQScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

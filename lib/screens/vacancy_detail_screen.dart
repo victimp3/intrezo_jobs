@@ -24,7 +24,6 @@ class VacancyDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ВЕРХНЯЯ КАРТИНКА + КНОПКА НАЗАД
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -94,8 +93,6 @@ class VacancyDetailScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 56),
-
-            // JOB DESCRIPTION
             _buildSectionTitle('Job Description'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -110,8 +107,6 @@ class VacancyDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Divider(),
-
-            // REQUIREMENTS
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: _buildSectionTitle('Requirements'),
@@ -132,11 +127,8 @@ class VacancyDetailScreen extends StatelessWidget {
                     .toList(),
               ),
             ),
-
             const SizedBox(height: 16),
             const Divider(),
-
-            // BENEFITS
             _buildSectionTitle('Benefits'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -157,10 +149,7 @@ class VacancyDetailScreen extends StatelessWidget {
                 }).toList(),
               ),
             ),
-
             const SizedBox(height: 32),
-
-// APPLY BUTTON
             Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: ElevatedButton(
@@ -175,7 +164,7 @@ class VacancyDetailScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ApplicationFormScreen(),
+                      builder: (context) => ApplicationFormScreen(vacancy: vacancy),
                     ),
                   );
                 },
