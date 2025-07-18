@@ -147,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false, // Убирает стрелку назад
         iconTheme: const IconThemeData(color: Color(0xFF545D68)),
         title: Image.asset('assets/images/headerLogo.png', height: 40),
         centerTitle: true,
@@ -163,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Home',
               isActive: true,
               onTap: () {
-                Navigator.pushNamed(context, '/home');
+                Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
               },
             ),
             _NavItem(
@@ -196,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Color(0xFF001730),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Align(
@@ -216,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

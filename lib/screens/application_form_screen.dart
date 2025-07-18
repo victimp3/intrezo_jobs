@@ -374,6 +374,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                 children: [
                   Checkbox(
                     value: _agreed,
+                    activeColor: Color(0xFF4CAF50),
                     onChanged: (v) => setState(() => _agreed = v ?? false),
                   ),
                   const Expanded(
@@ -396,11 +397,12 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                     child: OutlinedButton(
                       onPressed: _clearForm,
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        foregroundColor: const Color(0xFF001730),
                         side: const BorderSide(color: Color(0xFF001730)),
                       ),
-                      child: const Text('Clear'),
+                      child: const Text('CLEAR'),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -410,12 +412,12 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF001730),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: _uploadingFile
                           ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Text('Send'),
+                          : const Text('SEND'),
                     ),
                   ),
                 ],
