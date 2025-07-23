@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
@@ -34,9 +35,9 @@ class ContactScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 40),
-            const Text(
-              'CONTACT',
-              style: TextStyle(
+            Text(
+              'contact'.tr(),
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Roboto',
@@ -54,25 +55,24 @@ class ContactScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(
-                    child: Text(
-                      'Intrezo OÜ',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                      ),
+                  Text(
+                    'company_name'.tr(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text('Address', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('address'.tr(), style: const TextStyle(color: Colors.white, fontSize: 16)),
                   const Text(
                     'Lelle Tn 24\nTallinn, Harjumaa 11318',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Phone', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('phone'.tr(), style: const TextStyle(color: Colors.white, fontSize: 16)),
                   const Text(
                     '+372 56836668\n+372 6773091',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
@@ -80,7 +80,7 @@ class ContactScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: _launchEmail,
-                    child: const Text('Email', style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: Text('email'.tr(), style: const TextStyle(color: Colors.white, fontSize: 16)),
                   ),
                   GestureDetector(
                     onTap: _launchEmail,
@@ -94,20 +94,19 @@ class ContactScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Registry code', style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('registry_code'.tr(), style: const TextStyle(color: Colors.white, fontSize: 16)),
                   const Text(
                     '16440043',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 24),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () => _launchMessenger("https://wa.me/3725294917"),
                         icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30),
-                        label: const Text("WhatsApp\nContact Us", textAlign: TextAlign.left),
+                        label: Text("whatsapp_contact".tr(), textAlign: TextAlign.left),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF25D366),
                           foregroundColor: Colors.white,
@@ -118,7 +117,7 @@ class ContactScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () => _launchMessenger("viber://chat?number=%2B3725294917"),
                         icon: const FaIcon(FontAwesomeIcons.viber, color: Colors.white, size: 30),
-                        label: const Text("Viber\nContact Us", textAlign: TextAlign.left),
+                        label: Text("viber_contact".tr(), textAlign: TextAlign.left),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF7360F2),
                           foregroundColor: Colors.white,
@@ -133,7 +132,7 @@ class ContactScreen extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () => _launchMessenger("https://t.me/+3725294917"),
                       icon: const FaIcon(FontAwesomeIcons.telegram, color: Colors.white, size: 30),
-                      label: const Text("Telegram\nContact Us", textAlign: TextAlign.left),
+                      label: Text("telegram_contact".tr(), textAlign: TextAlign.left),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0088cc),
                         foregroundColor: Colors.white,
@@ -165,7 +164,6 @@ class ContactScreen extends StatelessWidget {
           ],
         ),
       ),
-
       bottomNavigationBar: Container(
         color: const Color(0xFF001730),
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -174,23 +172,23 @@ class ContactScreen extends StatelessWidget {
           children: [
             _NavItem(
               icon: Icons.home,
-              label: 'Home',
+              label: 'home'.tr(),
               onTap: () {
                 Navigator.pushNamed(context, '/home');
               },
             ),
             _NavItem(
               icon: Icons.info,
-              label: 'About Us',
+              label: 'about_us'.tr(),
               onTap: () {
                 Navigator.pushNamed(context, '/about-us');
               },
             ),
             _NavItem(
               icon: Icons.call,
-              label: 'Contact',
+              label: 'contact'.tr(),
               isActive: true,
-              onTap: () {}, // Уже на странице контактов
+              onTap: () {},
             ),
           ],
         ),

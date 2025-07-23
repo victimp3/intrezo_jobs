@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
@@ -33,13 +34,13 @@ class AboutUsScreen extends StatelessWidget {
               child: Row(
                 children: const [
                   Expanded(
-                    child: _StatItem(value: '93%', label: 'Repeat orders rate'),
+                    child: _StatItem(value: '93%', labelKey: 'repeat_orders'),
                   ),
                   Expanded(
-                    child: _StatItem(value: '15+', label: 'Years of experience'),
+                    child: _StatItem(value: '15+', labelKey: 'years_experience'),
                   ),
                   Expanded(
-                    child: _StatItem(value: '2-3', label: 'Candidates are enough'),
+                    child: _StatItem(value: '2-3', labelKey: 'candidates_enough'),
                   ),
                 ],
               ),
@@ -55,9 +56,9 @@ class AboutUsScreen extends StatelessWidget {
                 children: [
                   Image.asset('assets/images/mission_image.png'),
                   const SizedBox(height: 16),
-                  const Text(
-                    'OUR MISSION',
-                    style: TextStyle(
+                  Text(
+                    'our_mission_title'.tr(),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',
@@ -65,9 +66,9 @@ class AboutUsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Our mission is to provide personal and high-quality service by valuing honesty and orderliness. We provide security for our partners as well as opportunities for self-fulfilment for good employees.',
-                    style: TextStyle(
+                  Text(
+                    'our_mission_text'.tr(),
+                    style: const TextStyle(
                       fontSize: 15,
                       fontFamily: 'RobotoMono',
                       color: Colors.black,
@@ -88,9 +89,9 @@ class AboutUsScreen extends StatelessWidget {
                 children: [
                   Image.asset('assets/images/vision_image.png'),
                   const SizedBox(height: 16),
-                  const Text(
-                    'OUR VISION',
-                    style: TextStyle(
+                  Text(
+                    'our_vision_title'.tr(),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',
@@ -98,10 +99,10 @@ class AboutUsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Our vision is to be the best workforce outsourcing company in the HORECA and food industry sectors in Northern Europe.',
+                  Text(
+                    'our_vision_text'.tr(),
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       fontFamily: 'RobotoMono',
                       color: Colors.black,
@@ -126,17 +127,17 @@ class AboutUsScreen extends StatelessWidget {
           children: [
             _NavItem(
               icon: Icons.home,
-              label: 'Home',
+              labelKey: 'home',
               onTap: () => Navigator.pushNamed(context, '/home'),
             ),
             _NavItem(
               icon: Icons.info,
-              label: 'About Us',
+              labelKey: 'about_us',
               isActive: true,
             ),
             _NavItem(
               icon: Icons.call,
-              label: 'Contact',
+              labelKey: 'contact',
               onTap: () => Navigator.pushNamed(context, '/contact'),
             ),
           ],
@@ -148,9 +149,9 @@ class AboutUsScreen extends StatelessWidget {
 
 class _StatItem extends StatelessWidget {
   final String value;
-  final String label;
+  final String labelKey;
 
-  const _StatItem({required this.value, required this.label});
+  const _StatItem({required this.value, required this.labelKey});
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +168,7 @@ class _StatItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          label,
+          labelKey.tr(),
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 13,
@@ -182,13 +183,13 @@ class _StatItem extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String labelKey;
   final bool isActive;
   final VoidCallback? onTap;
 
   const _NavItem({
     required this.icon,
-    required this.label,
+    required this.labelKey,
     this.isActive = false,
     this.onTap,
   });
@@ -213,7 +214,7 @@ class _NavItem extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            label,
+            labelKey.tr(),
             style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ],

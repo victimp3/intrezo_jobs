@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'dart:typed_data';
 import 'confirmation_screen.dart';
 
@@ -35,11 +36,21 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
   String? _permitStatus;
 
   final List<String> countries = [
-    'Estonia', 'Finland', 'Latvia', 'Lithuania', 'Poland', 'Ukraine', 'Other'
+    'countries.estonia',
+    'countries.finland',
+    'countries.latvia',
+    'countries.lithuania',
+    'countries.poland',
+    'countries.ukraine',
+    'countries.other',
   ];
 
-  final List<String> contactMethods = [
-    'Phone', 'Email', 'WhatsApp', 'Viber', 'Telegram'
+  final List<String> contactMethods = [ // ← обнови этот блок
+    'contact_methods.phone',
+    'contact_methods.email',
+    'contact_methods.whatsapp',
+    'contact_methods.viber',
+    'contact_methods.telegram',
   ];
 
   Future<void> _pickDate() async {
@@ -121,7 +132,6 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
       ),
     );
   }
-
   void _clearForm() {
     _formKey.currentState?.reset();
     _nameController.clear();
@@ -143,15 +153,15 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) return 'Please enter email';
-    if (!value.contains('@') || !value.contains('.')) return 'Invalid email address';
+    if (value == null || value.isEmpty) return 'error_email_empty'.tr();
+    if (!value.contains('@') || !value.contains('.')) return 'error_email_invalid'.tr();
     return null;
   }
 
   String? _validatePhone(String? value) {
-    if (value == null || value.isEmpty) return 'Please enter phone number';
+    if (value == null || value.isEmpty) return 'error_phone_empty'.tr();
     final phoneRegex = RegExp(r'^[0-9+\-\s]{6,}$');
-    if (!phoneRegex.hasMatch(value)) return 'Invalid phone number';
+    if (!phoneRegex.hasMatch(value)) return 'error_phone_invalid'.tr();
     return null;
   }
 
@@ -219,9 +229,9 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
           ),
         ),
         centerTitle: true,
-        title: const Text(
-          'APPLICATION',
-          style: TextStyle(fontFamily: 'RobotoMono', color: Colors.black),
+        title: Text(
+          'application'.tr(),
+          style: const TextStyle(fontFamily: 'RobotoMono', color: Colors.black),
         ),
       ),
       body: SingleChildScrollView(
@@ -231,136 +241,143 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('MAIN', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('main'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
 
               _buildInputField(
-                label: 'Your Full Name',
+                label: 'full_name'.tr(),
                 requiredField: true,
                 child: TextFormField(
                   controller: _nameController,
-                  decoration: _inputDecoration('Type here'),
-                  validator: (v) => v == null || v.isEmpty ? 'Please enter your full name' : null,
+                  decoration: _inputDecoration('type_here'.tr()),
+                  validator: (v) => v == null || v.isEmpty ? 'error_full_name'.tr() : null,
                 ),
               ),
 
               _buildInputField(
-                label: 'Date of Birth',
+                label: 'dob'.tr(),
                 requiredField: true,
                 child: TextFormField(
                   controller: _dobController,
                   readOnly: true,
                   onTap: _pickDate,
-                  decoration: _inputDecoration('DD.MM.YYYY'),
-                  validator: (v) => v == null || v.isEmpty ? 'Please select your birth date' : null,
+                  decoration: _inputDecoration('ddmmyyyy'.tr()),
+                  validator: (v) => v == null || v.isEmpty ? 'error_dob'.tr() : null,
                 ),
               ),
 
               _buildInputField(
-                label: 'Citizenship',
+                label: 'citizenship'.tr(),
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
-                  decoration: _inputDecoration('Select your citizenship'),
+                  decoration: _inputDecoration('select_citizenship'.tr()),
                   value: _citizenship,
-                  items: countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                  items: countries.map((c) => DropdownMenuItem(
+                    value: c,
+                    child: Text(c.tr()), // ← здесь правильное место для перевода
+                  )).toList(),
                   onChanged: (v) => setState(() => _citizenship = v),
-                  validator: (v) => v == null ? 'Please select citizenship' : null,
+                  validator: (v) => v == null ? 'error_citizenship'.tr() : null,
                 ),
               ),
 
               _buildInputField(
-                label: 'Preferred Method of Contact',
+                label: 'contact_method'.tr(),
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
-                  decoration: _inputDecoration('Select method'),
+                  decoration: _inputDecoration('select_method'.tr()),
                   value: _contactMethod,
-                  items: contactMethods.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                  items: contactMethods.map((m) => DropdownMenuItem(
+                    value: m,
+                    child: Text(m.tr()), // ← перевод каждого метода
+                  )).toList(),
                   onChanged: (v) => setState(() => _contactMethod = v),
-                  validator: (v) => v == null ? 'Please select method' : null,
+                  validator: (v) => v == null ? 'error_contact_method'.tr() : null,
                 ),
               ),
 
               if (_contactMethod == 'Email')
                 _buildInputField(
-                  label: 'Email Address',
+                  label: 'email'.tr(),
                   requiredField: true,
                   child: TextFormField(
                     controller: _emailController,
-                    decoration: _inputDecoration('Enter your email'),
+                    decoration: _inputDecoration('enter_email'.tr()),
                     validator: _validateEmail,
                   ),
                 ),
 
               if (_contactMethod != null && _contactMethod != 'Email')
                 _buildInputField(
-                  label: 'Phone Number',
+                  label: 'phone'.tr(),
                   requiredField: true,
                   child: TextFormField(
                     controller: _phoneController,
-                    decoration: _inputDecoration('Enter your phone number'),
+                    decoration: _inputDecoration('enter_phone'.tr()),
                     validator: _validatePhone,
                   ),
                 ),
 
               _buildInputField(
-                label: 'Best Time to Contact You',
+                label: 'best_time'.tr(),
                 requiredField: true,
                 child: TextFormField(
                   controller: _bestTimeController,
-                  decoration: _inputDecoration('Type here'),
-                  validator: (v) => v == null || v.isEmpty ? 'Please enter time' : null,
+                  decoration: _inputDecoration('type_here'.tr()),
+                  validator: (v) => v == null || v.isEmpty ? 'error_best_time'.tr() : null,
                 ),
               ),
 
               _buildInputField(
-                label: 'Permit to Work/Live',
+                label: 'permit'.tr(),
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
-                  decoration: _inputDecoration('Select option'),
+                  decoration: _inputDecoration('select_option'.tr()),
                   value: _permitStatus,
-                  items: ['Yes', 'No', 'In process'].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                  items: ['Yes', 'No', 'In process']
+                      .map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                   onChanged: (v) => setState(() => _permitStatus = v),
-                  validator: (v) => v == null ? 'Please select option' : null,
+                  validator: (v) => v == null ? 'error_permit'.tr() : null,
                 ),
               ),
 
               const SizedBox(height: 24),
-              const Text('OPTIONAL', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('optional'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
 
               _buildInputField(
-                label: 'Work Experience',
+                label: 'experience'.tr(),
                 child: TextFormField(
                   controller: _experienceController,
-                  decoration: _inputDecoration('Type here'),
+                  decoration: _inputDecoration('type_here'.tr()),
                   maxLines: 2,
                 ),
               ),
 
               _buildInputField(
-                label: 'Language Skills',
+                label: 'languages'.tr(),
                 child: TextFormField(
                   controller: _languageController,
-                  decoration: _inputDecoration('Type here'),
+                  decoration: _inputDecoration('type_here'.tr()),
                   maxLines: 3,
                 ),
               ),
 
               _buildInputField(
-                label: 'Your Comment ($_commentLength/500)',
+                label: '${'comment'.tr()} ($_commentLength/500)',
                 child: TextFormField(
                   controller: _commentController,
                   maxLength: 500,
                   maxLines: 3,
                   onChanged: (v) => setState(() => _commentLength = v.length),
-                  decoration: _inputDecoration('Type your comment'),
+                  decoration: _inputDecoration('type_comment'.tr()),
                 ),
               ),
 
               ElevatedButton.icon(
                 onPressed: _pickFile,
                 icon: const Icon(Icons.attach_file),
-                label: Text(_selectedFile == null ? 'Attach File' : _selectedFile!.name),
+                label: Text(_selectedFile == null ? 'attach_file'.tr() : _selectedFile!.name),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF001730),
                   foregroundColor: Colors.white,
@@ -374,14 +391,14 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                 children: [
                   Checkbox(
                     value: _agreed,
-                    activeColor: Color(0xFF4CAF50),
+                    activeColor: const Color(0xFF4CAF50),
                     onChanged: (v) => setState(() => _agreed = v ?? false),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text.rich(
                       TextSpan(
-                        text: 'I agree to the processing of my personal data',
-                        children: [
+                        text: 'agree_data'.tr(),
+                        children: const [
                           TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
                         ],
                       ),
@@ -402,7 +419,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                         foregroundColor: const Color(0xFF001730),
                         side: const BorderSide(color: Color(0xFF001730)),
                       ),
-                      child: const Text('CLEAR'),
+                      child: Text('clear'.tr()),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -417,7 +434,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                       ),
                       child: _uploadingFile
                           ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                          : const Text('SEND'),
+                          : Text('send'.tr()),
                     ),
                   ),
                 ],

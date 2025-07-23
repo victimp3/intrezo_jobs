@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'application_form_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class VacancyDetailScreen extends StatelessWidget {
   final Map<String, dynamic> vacancy;
@@ -93,7 +94,7 @@ class VacancyDetailScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 56),
-            _buildSectionTitle('Job Description'),
+            _buildSectionTitle('job_description'.tr()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -109,27 +110,29 @@ class VacancyDetailScreen extends StatelessWidget {
             const Divider(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _buildSectionTitle('Requirements'),
+              child: _buildSectionTitle('requirements'.tr()),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: requirements
-                    .map((req) => Text(
-                  '• $req',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 14,
+                    .map(
+                      (req) => Text(
+                    '• $req',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 14,
+                    ),
                   ),
-                ))
+                )
                     .toList(),
               ),
             ),
             const SizedBox(height: 16),
             const Divider(),
-            _buildSectionTitle('Benefits'),
+            _buildSectionTitle('benefits'.tr()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -168,9 +171,9 @@ class VacancyDetailScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text(
-                  'APPLY',
-                  style: TextStyle(
+                child: Text(
+                  'apply'.tr(),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontFamily: 'Roboto',

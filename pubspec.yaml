@@ -20,6 +20,8 @@ dependencies:
   file_picker: ^10.2.0
   firebase_storage: ^11.5.6
   share_plus: ^7.2.1
+  easy_localization: ^3.0.1
+  webview_flutter: ^4.7.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +41,7 @@ flutter:
     - assets/images/team_photo.png
     - assets/images/mission_image.png
     - assets/images/vision_image.png
+    - assets/lang/
 
   fonts:
     - family: Roboto

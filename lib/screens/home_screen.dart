@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'vacancy_detail_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('favouriteJobs') ?? [];
 
-    final query = await FirebaseFirestore.instance.collection('vacancies').get();
+    final query =
+    await FirebaseFirestore.instance.collection('vacancies').get();
 
     final jobs = query.docs.map((doc) {
       final data = doc.data();
@@ -48,13 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       allJobs = jobs;
-      favouriteJobs = jobs.where((job) => saved.contains(job['title'])).toList();
+      favouriteJobs =
+          jobs.where((job) => saved.contains(job['title'])).toList();
     });
   }
 
   Future<void> saveFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    final favTitles = favouriteJobs.map((job) => job['title'] as String).toList();
+    final favTitles =
+    favouriteJobs.map((job) => job['title'] as String).toList();
     await prefs.setStringList('favouriteJobs', favTitles);
   }
 
@@ -74,13 +79,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Map<String, dynamic>> getSortedJobs() {
-    List<Map<String, dynamic>> jobs = showFavourites ? [...favouriteJobs] : [...allJobs];
+    List<Map<String, dynamic>> jobs =
+    showFavourites ? [...favouriteJobs] : [...allJobs];
 
     jobs.sort((a, b) {
       final aDate = DateTime.tryParse(a['posted_at'] ?? '') ?? DateTime(2000);
       final bDate = DateTime.tryParse(b['posted_at'] ?? '') ?? DateTime(2000);
 
-      return sortNewestFirst ? bDate.compareTo(aDate) : aDate.compareTo(bDate);
+      return sortNewestFirst
+          ? bDate.compareTo(aDate)
+          : aDate.compareTo(bDate);
     });
 
     return jobs;
@@ -95,51 +103,82 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const SizedBox(height: 110),
+            const SizedBox(height: 150),
             ListTile(
               leading: const Icon(Icons.description, color: Color(0xFF001730)),
-              title: const Text(
-                'Documents',
-                style: TextStyle(
+              title: Text(
+                'documents'.tr(),
+                style: const TextStyle(
                   color: Color(0xFF001730),
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onTap: () {
                 Navigator.pop(context);
-                if (!mounted) return;
                 Navigator.pushNamed(context, '/documents');
               },
             ),
             ListTile(
               leading: const Icon(Icons.help_outline, color: Color(0xFF001730)),
-              title: const Text(
-                'FAQ',
-                style: TextStyle(
+              title: Text(
+                'faq'.tr(),
+                style: const TextStyle(
                   color: Color(0xFF001730),
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onTap: () {
                 Navigator.pop(context);
-                if (!mounted) return;
                 Navigator.pushNamed(context, '/faq');
               },
             ),
             ListTile(
               leading: const Icon(Icons.settings, color: Color(0xFF001730)),
-              title: const Text(
-                'Settings',
-                style: TextStyle(
+              title: Text(
+                'settings'.tr(),
+                style: const TextStyle(
                   color: Color(0xFF001730),
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onTap: () {
                 Navigator.pop(context);
-                if (!mounted) return;
                 Navigator.pushNamed(context, '/settings');
               },
+            ),
+            ListTile(
+              leading: const Icon(Icons.language, color: Color(0xFF001730)),
+              title: Text(
+                'our_website'.tr(), // мультиязычный ключ
+                style: const TextStyle(
+                  color: Color(0xFF001730),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+                onTap: () async {
+                  final lang = context.locale.languageCode;
+
+                  String url;
+                  if (lang == 'ru' || lang == 'uk') {
+                    url = 'https://intrezo.ee/ru/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F/';
+                  } else {
+                    url = 'https://intrezo.ee/en/homepage/';
+                  }
+
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Could not launch website.')),
+                    );
+                  }
+                }
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: _buildLanguageSelector(context),
             ),
           ],
         ),
@@ -147,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        automaticallyImplyLeading: false, // Убирает стрелку назад
+        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Color(0xFF545D68)),
         title: Image.asset('assets/images/headerLogo.png', height: 40),
         centerTitle: true,
@@ -161,22 +200,23 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _NavItem(
               icon: Icons.home,
-              label: 'Home',
+              label: 'home'.tr(),
               isActive: true,
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/home', (route) => false);
               },
             ),
             _NavItem(
               icon: Icons.info,
-              label: 'About Us',
+              label: 'about_us'.tr(),
               onTap: () {
                 Navigator.pushNamed(context, '/about-us');
               },
             ),
             _NavItem(
               icon: Icons.call,
-              label: 'Contact',
+              label: 'contact'.tr(),
               onTap: () {
                 Navigator.pushNamed(context, '/contact');
               },
@@ -188,9 +228,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'VACANCY LIST',
-              style: TextStyle(
+            Text(
+              'vacancy_list'.tr(),
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Roboto',
@@ -208,8 +248,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       sortNewestFirst = !sortNewestFirst;
                     });
                   },
-                  icon: Icon(sortNewestFirst ? Icons.arrow_downward : Icons.arrow_upward),
-                  label: Text(sortNewestFirst ? 'Newest First' : 'Oldest First'),
+                  icon: Icon(sortNewestFirst
+                      ? Icons.arrow_downward
+                      : Icons.arrow_upward),
+                  label: Text(sortNewestFirst
+                      ? 'newest_first'.tr()
+                      : 'oldest_first'.tr()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF001730),
                     foregroundColor: Colors.white,
@@ -228,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                   child: Text(
-                    'AVAILABLE POSITIONS',
+                    'available_positions'.tr(),
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Roboto',
@@ -247,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                   child: Text(
-                    'FAVOURITES',
+                    'favourites'.tr(),
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Roboto',
@@ -276,7 +320,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => VacancyDetailScreen(vacancy: job),
+                            builder: (context) =>
+                                VacancyDetailScreen(vacancy: job),
                           ),
                         );
                       },
@@ -293,6 +338,46 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLanguageSelector(BuildContext context) {
+    final locales = [
+      {'label': 'Русский', 'locale': const Locale('ru')},
+      {'label': 'English', 'locale': const Locale('en')},
+      {'label': 'Українська', 'locale': const Locale('uk')},
+    ];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: locales.map((lang) {
+        final isActive = context.locale == lang['locale'];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 400, horizontal: 4),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isActive ? const Color(0xFF001730) : Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onPressed: () {
+                context.setLocale(lang['locale'] as Locale);
+                Navigator.pop(context);
+              },
+              child: Text(
+                lang['label'] as String,
+                style: TextStyle(
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  color: isActive ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -322,7 +407,8 @@ class _JobCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Image.asset(
                   'assets/images/${job['image']}',
                   height: 130,
