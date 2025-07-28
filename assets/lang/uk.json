@@ -39,6 +39,8 @@
   "comment": "Ваш коментар",
   "attach_file": "Додати файл",
   "agree_data": "Я згоден на обробку моїх персональних даних",
+  "agree_policy_part1": "Я погоджуюсь з",
+  "agree_policy_link": "Політикою конфіденційності",
   "job_description": "Опис роботи",
   "requirements": "Вимоги",
   "benefits": "Переваги",
@@ -96,5 +98,22 @@
   "page_unavailable": "Сторінка наразі недоступна.",
   "error_privacy": "Не вдалося відкрити посилання на політику конфіденційності.",
   "share_message": "Переглянь Intrezo: https://intrezo.ee/",
-  "our_website": "НАШ САЙТ"
+  "our_website": "НАШ САЙТ",
+
+  "permit_options": {
+    "yes": "Так",
+    "no": "Ні",
+    "in_process": "У процесі"
+  },
+
+  "nav": {
+    "home": "ГОЛОВНА",
+    "about": "ПРО НАС",
+    "contact": "КОНТАКТИ"
+  },
+
+  "confirmation_title": "Вашу заявку надіслано!",
+  "confirmation_message": "Дякуємо за відгук. Ми скоро з вами зв’яжемося.",
+  "confirmation_back": "Повернутися до вакансії"
+
 }

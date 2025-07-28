@@ -117,32 +117,6 @@ class AboutUsScreen extends StatelessWidget {
           ],
         ),
       ),
-
-      // Футер
-      bottomNavigationBar: Container(
-        color: const Color(0xFF001730),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _NavItem(
-              icon: Icons.home,
-              labelKey: 'home',
-              onTap: () => Navigator.pushNamed(context, '/home'),
-            ),
-            _NavItem(
-              icon: Icons.info,
-              labelKey: 'about_us',
-              isActive: true,
-            ),
-            _NavItem(
-              icon: Icons.call,
-              labelKey: 'contact',
-              onTap: () => Navigator.pushNamed(context, '/contact'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -177,48 +151,6 @@ class _StatItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String labelKey;
-  final bool isActive;
-  final VoidCallback? onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.labelKey,
-    this.isActive = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isActive ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              color: isActive ? const Color(0xFF001730) : Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            labelKey.tr(),
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ],
-      ),
     );
   }
 }

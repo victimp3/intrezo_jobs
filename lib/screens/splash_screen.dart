@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'how_it_works_screen.dart'; // экран с инструкцией
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       curve: Curves.easeOut,
     );
 
-    // Ждём нажатия
+    _controller.forward(); // 🔹 ВАЖНО: запуск анимации
   }
 
   @override
@@ -35,9 +36,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _navigate() async {
-    await _controller.forward(); // запускаем анимацию
+    if (_controller.isAnimating) return; // не давать переходить во время анимации
+
+    await _controller.forward(); // ещё раз на всякий случай
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed('/how-it-works');
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const HowItWorksScreen()),
+    );
   }
 
   @override
@@ -45,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return GestureDetector(
       onTap: _navigate,
       child: FadeTransition(
-        opacity: ReverseAnimation(_animation),
+        opacity: _animation, // 🔸 без ReverseAnimation
         child: Container(
           color: const Color(0xFF001730),
           alignment: Alignment.center,

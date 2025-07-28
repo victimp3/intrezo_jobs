@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main_screen.dart'; // добавлен импорт MainScreen
 
 class HowItWorksScreen extends StatefulWidget {
   const HowItWorksScreen({super.key});
@@ -34,13 +35,19 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
       if (_currentStep < _steps.length - 1) {
         _currentStep++;
       } else {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+        );
       }
     });
   }
 
   void _skip() {
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const MainScreen()),
+    );
   }
 
   @override

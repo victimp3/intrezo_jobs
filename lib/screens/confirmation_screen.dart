@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'vacancy_detail_screen.dart';
 
 class ConfirmationScreen extends StatelessWidget {
@@ -18,14 +19,14 @@ class ConfirmationScreen extends StatelessWidget {
             children: [
               const Icon(Icons.check_circle, color: Colors.green, size: 80),
               const SizedBox(height: 24),
-              const Text(
-                'Your application has been submitted!',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                'confirmation_title'.tr(),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Thank you for applying. We will contact you soon.',
+              Text(
+                'confirmation_message'.tr(),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -46,7 +47,7 @@ class ConfirmationScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text('Back to Vacancy'),
+                child: Text('confirmation_back'.tr()),
               ),
             ],
           ),

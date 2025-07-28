@@ -2,9 +2,6 @@
   "vacancy_list": "VACANCY LIST",
   "available_positions": "AVAILABLE POSITIONS",
   "favourites": "FAVOURITES",
-  "contact": "CONTACT",
-  "about_us": "ABOUT US",
-  "home": "HOME",
   "documents": "DOCUMENTS",
   "faq": "FAQ",
   "settings": "SETTINGS",
@@ -39,6 +36,8 @@
   "comment": "Your Comment",
   "attach_file": "Attach File",
   "agree_data": "I agree to the processing of my personal data",
+  "agree_policy_part1": "I agree to the",
+  "agree_policy_link": "Privacy Policy",
   "job_description": "Job Description",
   "requirements": "Requirements",
   "benefits": "Benefits",
@@ -96,5 +95,22 @@
   "page_unavailable": "Page not available yet.",
   "error_privacy": "Could not open Privacy Policy link.",
   "share_message": "Check out Intrezo: https://intrezo.ee/",
-  "our_website": "OUR WEBSITE"
+  "our_website": "OUR WEBSITE",
+
+  "permit_options": {
+    "yes": "Yes",
+    "no": "No",
+    "in_process": "In process"
+  },
+
+  "nav": {
+    "home": "HOME",
+    "about": "ABOUT US",
+    "contact": "CONTACT"
+  },
+
+  "confirmation_title": "Your application has been submitted!",
+  "confirmation_message": "Thank you for applying. We will contact you soon.",
+  "confirmation_back": "Back to Vacancy"
+
 }

@@ -1,0 +1,14 @@
+[
+  {
+    "icon": "home",
+    "label_key": "nav.home"
+  },
+  {
+    "icon": "about",
+    "label_key": "nav.about"
+  },
+  {
+    "icon": "contact",
+    "label_key": "nav.contact"
+  }
+]

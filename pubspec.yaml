@@ -22,6 +22,7 @@ dependencies:
   share_plus: ^7.2.1
   easy_localization: ^3.0.1
   webview_flutter: ^4.7.0
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +43,7 @@ flutter:
     - assets/images/mission_image.png
     - assets/images/vision_image.png
     - assets/lang/
+    - assets/config/
 
   fonts:
     - family: Roboto

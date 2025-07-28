@@ -24,12 +24,17 @@ class _HomeScreenState extends State<HomeScreen> {
     loadJobs();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.locale; // доступ к locale заставляет rebuild при смене языка
+  }
+
   Future<void> loadJobs() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('favouriteJobs') ?? [];
 
-    final query =
-    await FirebaseFirestore.instance.collection('vacancies').get();
+    final query = await FirebaseFirestore.instance.collection('vacancies').get();
 
     final jobs = query.docs.map((doc) {
       final data = doc.data();
@@ -51,15 +56,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       allJobs = jobs;
-      favouriteJobs =
-          jobs.where((job) => saved.contains(job['title'])).toList();
+      favouriteJobs = jobs.where((job) => saved.contains(job['title'])).toList();
     });
   }
 
   Future<void> saveFavourites() async {
     final prefs = await SharedPreferences.getInstance();
-    final favTitles =
-    favouriteJobs.map((job) => job['title'] as String).toList();
+    final favTitles = favouriteJobs.map((job) => job['title'] as String).toList();
     await prefs.setStringList('favouriteJobs', favTitles);
   }
 
@@ -79,16 +82,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Map<String, dynamic>> getSortedJobs() {
-    List<Map<String, dynamic>> jobs =
-    showFavourites ? [...favouriteJobs] : [...allJobs];
+    List<Map<String, dynamic>> jobs = showFavourites ? [...favouriteJobs] : [...allJobs];
 
     jobs.sort((a, b) {
       final aDate = DateTime.tryParse(a['posted_at'] ?? '') ?? DateTime(2000);
       final bDate = DateTime.tryParse(b['posted_at'] ?? '') ?? DateTime(2000);
-
-      return sortNewestFirst
-          ? bDate.compareTo(aDate)
-          : aDate.compareTo(bDate);
+      return sortNewestFirst ? bDate.compareTo(aDate) : aDate.compareTo(bDate);
     });
 
     return jobs;
@@ -97,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final jobs = getSortedJobs();
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
       endDrawer: Drawer(
@@ -104,78 +104,25 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: [
             const SizedBox(height: 150),
-            ListTile(
-              leading: const Icon(Icons.description, color: Color(0xFF001730)),
-              title: Text(
-                'documents'.tr(),
-                style: const TextStyle(
-                  color: Color(0xFF001730),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/documents');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.help_outline, color: Color(0xFF001730)),
-              title: Text(
-                'faq'.tr(),
-                style: const TextStyle(
-                  color: Color(0xFF001730),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/faq');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Color(0xFF001730)),
-              title: Text(
-                'settings'.tr(),
-                style: const TextStyle(
-                  color: Color(0xFF001730),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/settings');
-              },
-            ),
+            _drawerItem(Icons.description, 'documents', '/documents'),
+            _drawerItem(Icons.help_outline, 'faq', '/faq'),
+            _drawerItem(Icons.settings, 'settings', '/settings'),
             ListTile(
               leading: const Icon(Icons.language, color: Color(0xFF001730)),
-              title: Text(
-                'our_website'.tr(), // мультиязычный ключ
-                style: const TextStyle(
-                  color: Color(0xFF001730),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-                onTap: () async {
-                  final lang = context.locale.languageCode;
-
-                  String url;
-                  if (lang == 'ru' || lang == 'uk') {
-                    url = 'https://intrezo.ee/ru/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F/';
-                  } else {
-                    url = 'https://intrezo.ee/en/homepage/';
-                  }
-
-                  final uri = Uri.parse(url);
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Could not launch website.')),
-                    );
-                  }
+              title: Text('our_website'.tr(), style: const TextStyle(color: Color(0xFF001730), fontWeight: FontWeight.bold)),
+              onTap: () async {
+                final lang = context.locale.languageCode;
+                String url = lang == 'ru' || lang == 'uk'
+                    ? 'https://intrezo.ee/ru/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F/'
+                    : 'https://intrezo.ee/en/homepage/';
+                final uri = Uri.parse(url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch website.')));
                 }
+              },
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: _buildLanguageSelector(context),
@@ -192,44 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
-      bottomNavigationBar: Container(
-        color: const Color(0xFF001730),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _NavItem(
-              icon: Icons.home,
-              label: 'home'.tr(),
-              isActive: true,
-              onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/home', (route) => false);
-              },
-            ),
-            _NavItem(
-              icon: Icons.info,
-              label: 'about_us'.tr(),
-              onTap: () {
-                Navigator.pushNamed(context, '/about-us');
-              },
-            ),
-            _NavItem(
-              icon: Icons.call,
-              label: 'contact'.tr(),
-              onTap: () {
-                Navigator.pushNamed(context, '/contact');
-              },
-            ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Text(
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: const SizedBox(height: 20)),
+          SliverToBoxAdapter(
+            child: Text(
               'vacancy_list'.tr(),
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
@@ -237,23 +153,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Color(0xFF001730),
               ),
             ),
-            const SizedBox(height: 40),
-            Padding(
+          ),
+          SliverToBoxAdapter(child: const SizedBox(height: 30)),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      sortNewestFirst = !sortNewestFirst;
-                    });
-                  },
-                  icon: Icon(sortNewestFirst
-                      ? Icons.arrow_downward
-                      : Icons.arrow_upward),
-                  label: Text(sortNewestFirst
-                      ? 'newest_first'.tr()
-                      : 'oldest_first'.tr()),
+                  onPressed: () => setState(() => sortNewestFirst = !sortNewestFirst),
+                  icon: Icon(sortNewestFirst ? Icons.arrow_downward : Icons.arrow_upward),
+                  label: Text(sortNewestFirst ? 'newest_first'.tr() : 'oldest_first'.tr()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF001730),
                     foregroundColor: Colors.white,
@@ -261,83 +171,81 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
-            Row(
+          ),
+          SliverToBoxAdapter(child: const SizedBox(height: 20)),
+          SliverToBoxAdapter(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showFavourites = false;
-                    });
-                  },
-                  child: Text(
-                    'available_positions'.tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Roboto',
-                      color: !showFavourites
-                          ? const Color(0xFF001730)
-                          : Colors.black.withOpacity(0.4),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                _toggleTab('available_positions'.tr(), !showFavourites, () => setState(() => showFavourites = false)),
                 const SizedBox(width: 32),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showFavourites = true;
-                    });
-                  },
-                  child: Text(
-                    'favourites'.tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.bold,
-                      color: showFavourites
-                          ? const Color(0xFF001730)
-                          : Colors.black.withOpacity(0.4),
-                    ),
-                  ),
-                ),
+                _toggleTab('favourites'.tr(), showFavourites, () => setState(() => showFavourites = true)),
               ],
             ),
-            const SizedBox(height: 25),
-            SizedBox(
+          ),
+          SliverToBoxAdapter(child: const SizedBox(height: 20)),
+          SliverToBoxAdapter(
+            child: SizedBox(
               height: 330,
-              child: ListView.builder(
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: jobs.length,
                 itemBuilder: (context, index) {
                   final job = jobs[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                VacancyDetailScreen(vacancy: job),
-                          ),
-                        );
-                      },
-                      child: _JobCard(
-                        job: job,
-                        isFavourite: isFavourite(job),
-                        onToggleFavourite: () => toggleFavourite(job),
-                      ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VacancyDetailScreen(vacancy: job),
+                        ),
+                      );
+                    },
+                    child: _JobCard(
+                      job: job,
+                      isFavourite: isFavourite(job),
+                      onToggleFavourite: () => toggleFavourite(job),
                     ),
                   );
                 },
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
               ),
             ),
-          ],
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            fillOverscroll: true,
+            child: SizedBox(height: bottomPadding),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _toggleTab(String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.bold,
+          color: isActive ? const Color(0xFF001730) : Colors.black.withOpacity(0.4),
         ),
       ),
+    );
+  }
+
+  ListTile _drawerItem(IconData icon, String key, String route) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF001730)),
+      title: Text(key.tr(), style: const TextStyle(color: Color(0xFF001730), fontWeight: FontWeight.bold)),
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, route);
+      },
     );
   }
 
@@ -353,16 +261,14 @@ class _HomeScreenState extends State<HomeScreen> {
       children: locales.map((lang) {
         final isActive = context.locale == lang['locale'];
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 400, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
           child: Container(
             decoration: BoxDecoration(
               color: isActive ? const Color(0xFF001730) : Colors.grey[300],
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
+              style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 16)),
               onPressed: () {
                 context.setLocale(lang['locale'] as Locale);
                 Navigator.pop(context);
@@ -407,8 +313,7 @@ class _JobCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Image.asset(
                   'assets/images/${job['image']}',
                   height: 130,
@@ -499,48 +404,6 @@ class _JobCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback? onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    this.isActive = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isActive ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              color: isActive ? const Color(0xFF001730) : Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ],
       ),
