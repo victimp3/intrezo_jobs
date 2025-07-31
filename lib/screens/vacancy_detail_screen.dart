@@ -9,7 +9,7 @@ class VacancyDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = vacancy['image'] ?? '';
+    final image = (vacancy['image'] ?? '').toString();
     final title = vacancy['title'] ?? '';
     final salary = vacancy['salary'] ?? '';
     final location = vacancy['location'] ?? '';
@@ -21,14 +21,14 @@ class VacancyDetailScreen extends StatelessWidget {
     final benefits = List<String>.from(vacancy['benefits'] ?? []);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFf4f5f4),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
               clipBehavior: Clip.none,
               children: [
-                image.startsWith('http')
+                image.isNotEmpty && image.startsWith('http')
                     ? Image.network(
                   image,
                   width: double.infinity,
@@ -50,9 +50,9 @@ class VacancyDetailScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: const Color(0xFF001730),
                       ),
-                      child: const Icon(Icons.arrow_back),
+                      child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
                 ),
@@ -117,16 +117,14 @@ class VacancyDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: requirements
-                    .map(
-                      (req) => Text(
-                    '• $req',
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 14,
-                    ),
+                    .map((req) => Text(
+                  '• $req',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 14,
                   ),
-                )
+                ))
                     .toList(),
               ),
             ),

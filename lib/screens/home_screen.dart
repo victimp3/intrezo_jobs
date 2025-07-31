@@ -100,34 +100,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const SizedBox(height: 150),
-            _drawerItem(Icons.description, 'documents', '/documents'),
-            _drawerItem(Icons.help_outline, 'faq', '/faq'),
-            _drawerItem(Icons.settings, 'settings', '/settings'),
-            ListTile(
-              leading: const Icon(Icons.language, color: Color(0xFF001730)),
-              title: Text('our_website'.tr(), style: const TextStyle(color: Color(0xFF001730), fontWeight: FontWeight.bold)),
-              onTap: () async {
-                final lang = context.locale.languageCode;
-                String url = lang == 'ru' || lang == 'uk'
-                    ? 'https://intrezo.ee/ru/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F/'
-                    : 'https://intrezo.ee/en/homepage/';
-                final uri = Uri.parse(url);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch website.')));
-                }
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: _buildLanguageSelector(context),
-            ),
-          ],
+        child: Container(
+          color: Colors.white,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const SizedBox(height: 150),
+              _drawerItem(Icons.description, 'documents', '/documents'),
+              _drawerItem(Icons.help_outline, 'faq', '/faq'),
+              _drawerItem(Icons.settings, 'settings', '/settings'),
+              ListTile(
+                leading: const Icon(Icons.language, color: Color(0xFF001730)),
+                title: Text(
+                  'our_website'.tr(),
+                  style: const TextStyle(color: Color(0xFF001730), fontWeight: FontWeight.bold),
+                ),
+                onTap: () async {
+                  final lang = context.locale.languageCode;
+                  String url = lang == 'ru' || lang == 'uk'
+                      ? 'https://intrezo.ee/ru/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F/'
+                      : 'https://intrezo.ee/en/homepage/';
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Could not launch website.')),
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: _buildLanguageSelector(context),
+              ),
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
@@ -135,7 +143,13 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Color(0xFF545D68)),
-        title: Image.asset('assets/images/headerLogo.png', height: 40),
+        title: Image.network(
+          'https://firebasestorage.googleapis.com/v0/b/intrezo-jobs.firebasestorage.app/o/headerLogo.png?alt=media&token=7a42e732-ea3d-42c3-bb2a-ae5e6cd1a295',
+          height: 40,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('INTREZO', style: TextStyle(color: Color(0xFF001730)));
+          },
+        ),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
@@ -314,7 +328,14 @@ class _JobCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                child: Image.asset(
+                child: job['image'].toString().startsWith('http')
+                    ? Image.network(
+                  job['image'],
+                  height: 130,
+                  width: 250,
+                  fit: BoxFit.cover,
+                )
+                    : Image.asset(
                   'assets/images/${job['image']}',
                   height: 130,
                   width: 250,

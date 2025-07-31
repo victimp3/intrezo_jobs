@@ -23,7 +23,7 @@ class ContactScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F3F6),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -37,7 +37,11 @@ class ContactScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Center(
-                          child: Image.asset('assets/images/headerLogo.png', height: 40),
+                          child: Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/intrezo-jobs.firebasestorage.app/o/headerLogo.png?alt=media&token=7a42e732-ea3d-42c3-bb2a-ae5e6cd1a295',
+                            height: 40,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 40),

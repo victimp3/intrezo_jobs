@@ -1,1 +1,34 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"intrezo-jobs","appId":"1:427068391886:android:edef3f6f09f80c9b5c6b9f","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"intrezo-jobs","configurations":{"android":"1:427068391886:android:edef3f6f09f80c9b5c6b9f"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "intrezo-jobs",
+          "appId": "1:427068391886:android:edef3f6f09f80c9b5c6b9f",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "intrezo-jobs",
+          "configurations": {
+            "android": "1:427068391886:android:edef3f6f09f80c9b5c6b9f"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'how_it_works_screen.dart'; // экран с инструкцией
+import 'package:shared_preferences/shared_preferences.dart';
+import 'how_it_works_screen.dart';
+import 'language_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       curve: Curves.easeOut,
     );
 
-    _controller.forward(); // 🔹 ВАЖНО: запуск анимации
+    _controller.forward(); // 🔹 запуск анимации
   }
 
   @override
@@ -36,13 +38,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _navigate() async {
-    if (_controller.isAnimating) return; // не давать переходить во время анимации
+    if (_controller.isAnimating) return;
 
-    await _controller.forward(); // ещё раз на всякий случай
+    await _controller.forward();
     if (!mounted) return;
 
+    final prefs = await SharedPreferences.getInstance();
+    final languageSelected = false;
+
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HowItWorksScreen()),
+      MaterialPageRoute(
+        builder: (context) => languageSelected
+            ? const HowItWorksScreen()
+            : const LanguageSelectionScreen(),
+      ),
     );
   }
 
@@ -51,12 +60,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return GestureDetector(
       onTap: _navigate,
       child: FadeTransition(
-        opacity: _animation, // 🔸 без ReverseAnimation
+        opacity: _animation,
         child: Container(
           color: const Color(0xFF001730),
           alignment: Alignment.center,
-          child: Image.asset(
-            'assets/images/logo.png',
+          child: Image.network(
+            'https://firebasestorage.googleapis.com/v0/b/intrezo-jobs.firebasestorage.app/o/logo.png?alt=media&token=10283c4c-5e21-458f-83d3-1a876c2c5e86',
             width: 250,
             height: 250,
             fit: BoxFit.contain,

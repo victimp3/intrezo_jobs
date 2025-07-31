@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main_screen.dart'; // добавлен импорт MainScreen
+import 'package:easy_localization/easy_localization.dart';
+import 'main_screen.dart';
 
 class HowItWorksScreen extends StatefulWidget {
   const HowItWorksScreen({super.key});
@@ -9,30 +10,30 @@ class HowItWorksScreen extends StatefulWidget {
 }
 
 class _HowItWorksScreenState extends State<HowItWorksScreen> {
-  int _currentStep = 0;
+  int _currentStep = 1;
 
-  final List<Map<String, String>> _steps = [
+  List<Map<String, String>> get steps => [
     {
-      'title': 'Explore job offers!',
-      'subtitle': 'Check out the latest jobs',
+      'title': 'how_step1_title'.tr(),
+      'subtitle': 'how_step1_sub'.tr(),
     },
     {
-      'title': 'Select a job!',
-      'subtitle': 'Read details like salary, hours, and etc.',
+      'title': 'how_step2_title'.tr(),
+      'subtitle': 'how_step2_sub'.tr(),
     },
     {
-      'title': 'Apply easily!',
-      'subtitle': 'Fill in a short form and submit',
+      'title': 'how_step3_title'.tr(),
+      'subtitle': 'how_step3_sub'.tr(),
     },
     {
-      'title': 'Get confirmation!',
-      'subtitle': 'You’ll be notified after applying',
+      'title': 'how_step4_title'.tr(),
+      'subtitle': 'how_step4_sub'.tr(),
     },
   ];
 
   void _nextStep() {
     setState(() {
-      if (_currentStep < _steps.length - 1) {
+      if (_currentStep < steps.length) {
         _currentStep++;
       } else {
         Navigator.pushReplacement(
@@ -52,88 +53,100 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final current = _steps[_currentStep];
+    final currentSteps = steps;
 
-    return GestureDetector(
-      onTap: _nextStep,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+          child: Column(
             children: [
-              Column(
-                children: [
-                  const SizedBox(height: 24),
-                  const Text(
-                    'HOW IT WORKS',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Roboto',
-                    ),
+              const SizedBox(height: 60),
+              Text(
+                'how_it_works_title'.tr(),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Roboto',
+                  color: Color(0xFF001730),
+                ),
+              ),
+              const SizedBox(height: 80),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _currentStep,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      _StepTile(
+                        number: index + 1,
+                        title: currentSteps[index]['title']!,
+                        subtitle: currentSteps[index]['subtitle']!,
+                        showLine: index < _currentStep - 1,
+                      ),
+                      const SizedBox(height: 30),
+                    ],
                   ),
-                  const SizedBox(height: 32),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        for (int i = 0; i <= _currentStep; i++) ...[
-                          Align(
-                            alignment: Alignment.center,
-                            child: _StepCard(
-                              title: _steps[i]['title']!,
-                              subtitle: _steps[i]['subtitle']!,
-                            ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              if (_currentStep < steps.length)
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          if (i < _currentStep)
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Icon(Icons.arrow_downward, size: 24),
-                            ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  if (_currentStep < _steps.length - 1)
-                    TextButton(
-                      onPressed: _skip,
-                      child: const Text(
-                        'SKIP',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                          decoration: TextDecoration.underline,
-                          color: Colors.black,
-                          fontFamily: 'Roboto',
+                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                        ),
+                        onPressed: _skip,
+                        child: Text(
+                          'how_skip'.tr(),
+                          style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                         ),
                       ),
                     ),
-                  if (_currentStep == _steps.length - 1)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
+                    const SizedBox(width: 16),
+                    Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
                           backgroundColor: const Color(0xFF001730),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
+                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                         ),
                         onPressed: _nextStep,
-                        child: const Text(
-                          'START',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontFamily: 'Roboto',
-                          ),
+                        child: Text(
+                          'how_next'.tr(),
+                          style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                         ),
                       ),
+                    )
+                  ],
+                )
+              else
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color(0xFF001730),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                ],
-              ),
+                    padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
+                  ),
+                  onPressed: _nextStep,
+                  child: Text(
+                    'how_start'.tr(),
+                    style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                  ),
+                ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -142,52 +155,78 @@ class _HowItWorksScreenState extends State<HowItWorksScreen> {
   }
 }
 
-class _StepCard extends StatelessWidget {
+class _StepTile extends StatelessWidget {
+  final int number;
   final String title;
   final String subtitle;
+  final bool showLine;
 
-  const _StepCard({required this.title, required this.subtitle});
+  const _StepTile({
+    required this.number,
+    required this.title,
+    required this.subtitle,
+    this.showLine = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 320,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF001730),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: const BoxDecoration(
+                color: Color(0xFF001730),
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '$number',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
+            if (showLine)
+              Container(
+                width: 2,
+                height: 40,
+                color: Color(0xFF001730),
+              )
+          ],
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Color(0xFF001730),
+                  fontFamily: 'Roboto',
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'RobotoMono',
+                  color: Color(0xFF001730),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 15,
-              fontFamily: 'Roboto',
-            ),
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 }

@@ -111,6 +111,38 @@
 
   "confirmation_title": "Your application has been submitted!",
   "confirmation_message": "Thank you for applying. We will contact you soon.",
-  "confirmation_back": "Back to Vacancy"
+  "confirmation_back": "Back to Vacancy",
+
+  "how_it_works_title": "HOW INTREZO WORKS",
+  "how_step1_title": "Explore job offers",
+  "how_step1_sub": "Check out the latest jobs and find your perfect match!",
+  "how_step2_title": "Read details",
+  "how_step2_sub": "Check important info: salary, hours, and job description.",
+  "how_step3_title": "Apply easily",
+  "how_step3_sub": "Fill out a simple application form directly in the app.",
+  "how_step4_title": "Get confirmation",
+  "how_step4_sub": "You will receive a message that your application has been successfully submitted.",
+  "how_skip": "SKIP",
+  "how_next": "NEXT",
+  "how_start": "START",
+
+  "choose_language": "CHOOSE YOUR LANGUAGE",
+  "continue": "CONTINUE",
+
+  "doc_idcard_title": "ID Card",
+  "doc_idcard": "The Estonian ID card is a mandatory document for all residents. It serves as an official form of identification and allows access to e-services, including digital signatures, tax declarations, and medical portals. Foreigners residing in Estonia for more than 3 months must apply for an ID card at the Police and Border Guard Board.",
+  "doc_residence_title": "Residence Permit / Work Permit",
+  "doc_residence": "If you are a non-EU citizen and plan to stay in Estonia for longer than 90 days, you must apply for a residence permit. This requires a work contract or proof of sufficient financial means. Applications are submitted at the PBGB or Estonian embassies.",
+  "doc_health_title": "Health Insurance",
+  "doc_health": "Health insurance is mandatory in Estonia. Most employees are covered through the Estonian Health Insurance Fund (Haigekassa). Freelancers and self-employed must apply separately. Emergency care is provided regardless of insurance status.",
+  "doc_sickleave_title": "How to Get a Sick Leave",
+  "doc_sickleave": "To receive paid sick leave, contact your family doctor who will open a digital sick leave certificate in the e-Health system. The first three days are unpaid, and from day 4 onward, compensation is provided.",
+  "doc_visa_title": "Work Visa or Visa D",
+  "doc_visa": "A type D visa allows you to work in Estonia for up to 365 days. Apply at an embassy or at the PBGB. You need a valid passport, work contract, photo, proof of insurance and fee payment. After arriving, you must register your place of residence and apply for a residence permit if needed.",
+  "doc_tax_title": "Annual Tax Declaration",
+  "doc_tax": "Annual tax declarations are submitted online at emta.ee. The deadline is April 30. Residents must declare worldwide income. The system often pre-fills data, and refunds are transferred directly to bank accounts.",
+  "doc_passport_photo_title": "Passport Photo",
+  "doc_passport_photo": "Passport photos must meet strict ICAO standards. Size: 35x45mm, recent (less than 6 months), light background, no shadows, neutral expression. Avoid glasses, head coverings (unless religious), and heavy makeup.",
+  "Documents": "DOCUMENTS"
 
 }

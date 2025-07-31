@@ -32,7 +32,7 @@ class FAQScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF001730),
         elevation: 0,
         toolbarHeight: 80,
         leading: Padding(
@@ -51,7 +51,7 @@ class FAQScreen extends StatelessWidget {
         centerTitle: true,
         title: Text(
           'faq'.tr(),
-          style: const TextStyle(fontFamily: 'RobotoMono', color: Colors.black),
+          style: const TextStyle(fontFamily: 'RobotoMono', color: Colors.white),
         ),
       ),
       body: ListView.builder(

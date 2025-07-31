@@ -316,6 +316,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration('select_citizenship'.tr()),
+                  dropdownColor: Colors.white,
                   value: _citizenship,
                   items: countries.map((c) => DropdownMenuItem(
                     value: c,
@@ -331,6 +332,7 @@ class _ApplicationFormScreenState extends State<ApplicationFormScreen> {
                 requiredField: true,
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration('select_method'.tr()),
+                  dropdownColor: Colors.white,
                   value: _contactMethod,
                   items: contactMethods.map((m) => DropdownMenuItem(
                     value: m,
